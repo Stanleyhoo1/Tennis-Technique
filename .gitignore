@@ -7,5 +7,4 @@
 # Ignore any temporary files or backup notebooks
 *~ 
 
-data/
 results/
