@@ -39,6 +39,11 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
    - Open a program where you can run Python code like Jupyter Notebook in this folder
    - Run the following commands in this exact order:
      - ```python
+       pip install -r requirements.txt
+       ```
+  
+       This will install the neccesary packages
+     - ```python
        from Setup import
        ```
      - ```python
@@ -84,7 +89,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
      ```
 
 2. **Output**:
-   - The model will display the original video with the predicted swing path overlayed on the player, showing the suggested optimal swing.
+   - The model will return the path of the output video file, which is the original video with the predicted swing path overlayed on the player, showing the suggested optimal swing.
 
 ---
 
