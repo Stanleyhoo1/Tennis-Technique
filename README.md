@@ -38,12 +38,13 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 4. **Setup**:
    - Open a program where you can run Python code like Jupyter Notebook in this folder
    - Run the following commands in this exact order:
-     - ```python
+     - This will install the neccesary packages
+
+       ```python
        pip install -r requirements.txt
        ```
-  
-       This will install the neccesary packages
-     - ```python
+     - This will load the YOLOv7 model we will be using to extract data from the videos
+       ```python
        from Setup import
        ```
      - ```python
