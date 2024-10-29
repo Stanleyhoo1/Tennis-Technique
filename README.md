@@ -1,7 +1,7 @@
 
 # Tennis Technique AI Model
 
-**Model Used:** YOLOv7 ([link to YOLOv7 repository](https://github.com/WongKinYiu/yolov7/tree/main))
+**Model Used to Extract Data:** YOLOv7 ([link to YOLOv7 repository](https://github.com/WongKinYiu/yolov7/tree/main))
 
 ## Project Description
 
