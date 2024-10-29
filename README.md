@@ -20,7 +20,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 
 1. **Clone the Repository**:
    ```bash
-   git clone [YOUR REPOSITORY URL]
+   git clone [THIS REPOSITORY URL]
    cd [YOUR PROJECT FOLDER]
    ```
 
@@ -35,11 +35,11 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 ## AI Swing Classification Model
 
 1. **Function Call**:
-   - Run the classification model by calling the `classify_swing` function (replace this with your function name if different).
-   - **Parameters**: Pass the path of the video file as an argument.
+   - Run the classification model by calling the `classify_swing` function.
+   - **Parameters**: Pass the paths of the video files you want to classify as an argument in a list format.
    - Example:
      ```python
-     classify_swing("path/to/your/video.mp4")
+     classify_swing(["path/to/your/video.mp4", "path/to/your/video.mp4"], model)
      ```
 
 2. **Output**:
@@ -48,11 +48,11 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 ## AI Swing Overlay Model
 
 1. **Function Call**:
-   - Run the overlay model by calling the `overlay_swing_path` function (replace this with your function name if different).
+   - Run the overlay model by calling the `overlay_swing_path` function.
    - **Parameters**: Pass the path of the video file as an argument.
    - Example:
      ```python
-     overlay_swing_path("path/to/your/video.mp4")
+     overlay_swing_path("path/to/your/video.mp4", model)
      ```
 
 2. **Output**:
