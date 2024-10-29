@@ -27,6 +27,18 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 2. **Download the YOLOv7 Model**:
    - Download the YOLOv7 model weights and place them in the project directory. Follow the instructions from the YOLOv7 [GitHub repository](https://github.com/WongKinYiu/yolov7/tree/main) to download the model.
 
+3. **Create Folder to Store Data**:
+   - Create an empty folder called Tests in the folder you cloned this repo to
+  
+4. **Setup**:
+   - Open a program where you can run Python code like Jupyter Notebook in this folder
+   - Run the following commands in this exact order:
+     - from Setup import *
+     - model = get_model()
+   - You should now be in the yolov7 folder, you can check to make sure by running `print(os.getcwd())`
+   - Run the following commands:
+     - `from Classification import classify_swing`
+     - `from Overlay import overlay_swing_path`
 3. **Run the Models**:
    Follow the instructions below for using both models.
 
