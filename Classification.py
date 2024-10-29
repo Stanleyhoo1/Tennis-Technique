@@ -265,7 +265,7 @@ def set_seeds(seed=42):
     os.environ['PYTHONHASHSEED'] = str(seed)
 
 # New AI model, uses a Sequential model as well but uses the actual coordinates of the keypoints as inputs
-def predict_swing(videos, pose_model):
+def classify_swing(videos, pose_model):
     set_seeds(42)
     
     keypoints_data = []
