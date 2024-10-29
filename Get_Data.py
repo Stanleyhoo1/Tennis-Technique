@@ -8,128 +8,18 @@ import torch
 import time
 import datetime
 import csv
-
 from torchvision import transforms
 from PIL import Image
 from moviepy.editor import *
-
-%matplotlib inline
-
-YOLO_DIR = 'yolov7'
-
-RESULTS_DIR = 'results'
-    
-YOLOV7_MODEL = [
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7x.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-d6.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6e.pt",
-    "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6-pose.pt",
-]
-
-def get_yolov7_model(modelistid=1):
-    """
-    Download YoloV7 model from a yoloV7 model list
-    """
-    modelid = YOLOV7_MODEL[modelistid]
-
-    if not os.path.exists(modelid):
-        print("Downloading the model:",
-              os.path.basename(modelid), "from:", modelid)
-        urllib.request.urlretrieve(modelid,
-                                   filename=os.path.basename(modelid))
-        print("Done\n")
-        !ls yolo*.pt -lh
-
-    if os.path.exists(modelid):
-        print("Downloaded model files:")
-        !ls yolo*.pt -lh
-        
-os.chdir(YOLO_DIR)
-
+from Setup import running_inference
 from utils.datasets import letterbox
 from utils.general import non_max_suppression_kpt
 from utils.plots import output_to_keypoint, plot_skeleton_kpts
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# Contains the code to run to process a videofile and store the data in a CSV file
 
-
-def loading_yolov7_model(yolomodel):
-    """
-    Loading yolov7 model
-    """
-    print("Loading model:", yolomodel)
-    model = torch.load(yolomodel, map_location=device)['model']
-    model.float().eval()
-
-    if torch.cuda.is_available():
-        # half() turns predictions into float16 tensors
-        # which significantly lowers inference time
-        model.half().to(device)
-
-    return model, yolomodel
-
-def image_view(imagefile, w=15, h=10):
-    """
-    Displaying an image from an image file
-    """
-    %matplotlib inline
-    plt.figure(figsize=(w, h))
-    plt.axis('off')
-    plt.imshow(cv2.cvtColor(cv2.imread(imagefile),
-                            cv2.COLOR_BGR2RGB))
-    
-YOLOV7_MODEL[0]
-get_yolov7_model(0)
-YOLOV7MODEL = os.path.basename(YOLOV7_MODEL[0])
-
-try:
-    print("Loading the model...")
-    model, yolomodel = loading_yolov7_model(yolomodel=YOLOV7MODEL)
-    print("Using the", YOLOV7MODEL, "model")
-    print("Done")
-
-except:
-    print("[Error] Cannot load the model", YOLOV7MODEL)
-    
-YOLOV7_MODEL[7]
-
-get_yolov7_model(7)
-
-YOLOV7MODEL = os.path.basename(YOLOV7_MODEL[7])
-
-try:
-    print("Loading the model...")
-    model, yolomodel = loading_yolov7_model(yolomodel=YOLOV7MODEL)
-    print("Using the", YOLOV7MODEL, "model")
-    print("Done")
-
-except:
-    print("[Error] Cannot load the model", YOLOV7MODEL)
-    
-def running_inference(image):
-    """
-    Running yolov7 model inference
-    """
-    image = letterbox(image, 960,
-                      stride=64,
-                      auto=True)[0]  # shape: (567, 960, 3)
-    image = transforms.ToTensor()(image)  # torch.Size([3, 567, 960])
-
-    if torch.cuda.is_available():
-        image = image.half().to(device)
-
-    image = image.unsqueeze(0)  # torch.Size([1, 3, 567, 960])
-
-    with torch.no_grad():
-        output, _ = model(image)
-
-    return output, image
-
-def draw_keypoints(output, image, confidence=0.25, threshold=0.65):
+# Adapted from draw_keypoints function in YOLOv7 model, modified to only track the center figure, in this usage the tennis player
+def draw_keypoints(output, image, model, confidence=0.25, threshold=0.65):
     """
     Draw YoloV7 pose keypoints
     """
@@ -182,6 +72,7 @@ def draw_keypoints(output, image, confidence=0.25, threshold=0.65):
 
     return nimg, cors
 
+# Adapted from the YOLOv7 model, modified to return x and y coordinates of the keypoints
 def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
     # Plot the skeleton and keypoints for coco dataset
     palette = np.array([[255, 128, 0], [255, 153, 51], [255, 178, 102],
@@ -200,11 +91,14 @@ def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
     pose_kpt_color = palette[[16, 16, 16, 16, 16, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9]]
     radius = 5
     num_kpts = len(kpts) // steps
+    
+    # Inititalize x and y cors list
     xcors = []
     ycors = []
 
     for kid in range(num_kpts):
         r, g, b = pose_kpt_color[kid]
+        # Append x and y coordinates to the list
         x_coord, y_coord = kpts[steps * kid], kpts[steps * kid + 1]
         xcors.append(int(x_coord))
         ycors.append(int(y_coord))
@@ -232,11 +126,12 @@ def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
     
     return xcors, ycors
 
+# Reads keypoints from the saved csv files
 def read_keypoints_from_csv(csv_file):
-    keypoints = [[] for _ in range(17)]  # Assuming 17 keypoints
+    keypoints = [[] for _ in range(17)]  # 17 keypoints
     frames = []
 
-    # Read keypoints from CSV file
+    # Opens CSV file
     with open(csv_file, 'r') as file:
         csvreader = csv.reader(file)
         next(csvreader)  # Skip header
@@ -245,12 +140,14 @@ def read_keypoints_from_csv(csv_file):
             keypoint = int(float(row[1]))  # Convert to float first, then to int
             x = float(row[2])
             y = float(row[3])
-            keypoints[keypoint].append((x, y))
+            keypoints[keypoint].append((x, y)) # (x, y) coordinates of the keypoint
+            # New frame
             if keypoint == 0:
                 frames.append(frame)
 
     return keypoints, frames
 
+# Normalizes the x and y coordinates on a 0 to 1 scale, scaled to that specific video
 def normalize_csv(csvfile):
     keypoints, frames = read_keypoints_from_csv(csvfile)
     
@@ -258,9 +155,11 @@ def normalize_csv(csvfile):
     all_x = [kp[0] for kps in keypoints for kp in kps]
     all_y = [kp[1] for kps in keypoints for kp in kps]
     
+    # Min/max for x and y, used to normalize everything on a 0-1 scale
     max_x, min_x = max(all_x), min(all_x)
     max_y, min_y = max(all_y), min(all_y)
     
+    # Saves normalized data in the same csv file, replaces old data
     with open(csvfile, 'w', newline='') as file:
         csvwriter = csv.writer(file)
         csvwriter.writerow(['Frame', 'Keypoint', 'X', 'Y', 'Max X', 'Min X', 'Max Y', 'Min Y'])  # Write header
@@ -270,7 +169,8 @@ def normalize_csv(csvfile):
                 normalized_x = (keypoints[i][j][0] - min_x) / (max_x - min_x) if max_x != min_x else 0.0
                 normalized_y = (keypoints[i][j][1] - min_y) / (max_y - min_y) if max_y != min_y else 0.0
                 csvwriter.writerow([frames[j], i, normalized_x, normalized_y, max_x, min_x, max_y, min_y])
-                
+
+# Interpolation function
 def distribute(lst, size):
     if size <= 0:
         return []
@@ -290,6 +190,7 @@ def distribute(lst, size):
     
     return new_lst
 
+# Expands the video to 800 frames using interpolation
 def expand_video(csvfile):
     keypoints, frames = read_keypoints_from_csv(csvfile)
     with open(csvfile, 'w', newline='') as csv_file:
@@ -304,7 +205,8 @@ def expand_video(csvfile):
             for j in range(800):
                 csvwriter.writerow([j, i, new_xcors[j], new_ycors[j]])
 
-def yoloV7_pose_video(videofile, confidence=0.25, threshold=0.65):
+# Adapted from YOLOv7 model, modified to save normalized and interpolated data in CSV files, and return the CSV file
+def yoloV7_pose_video(videofile, model, confidence=0.25, threshold=0.65):
     """
     Processing the video using YoloV7
     """
@@ -325,17 +227,17 @@ def yoloV7_pose_video(videofile, confidence=0.25, threshold=0.65):
 
     # Capture the results frames into a video
     capture = cv2.VideoCapture(videofile)
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    outputvideofile = "../results/result_" + os.path.basename(videofile)
-    outvideo = cv2.VideoWriter(outputvideofile, fourcc, 30.0,
-                               (int(capture.get(3)), int(capture.get(4))))
+
     idx = 1
     
     cors = []
     
-    video_number = videofile.split()[-1].split('.')[0]
+    videoname = videofile.split('/')[-1].split('.')[0]
 
-    csv_file = f'keypoints {video_number}.csv'
+    csv_file = f'{videoname}.csv'
+    
+    if os.path.exists(csv_file):
+        return csv_file
     
     with open(csv_file, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -352,15 +254,9 @@ def yoloV7_pose_video(videofile, confidence=0.25, threshold=0.65):
                           "| Done:", pctdone, "%")
 
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                output, frame = running_inference(frame)
-                frame, frame_cor = draw_keypoints(output, frame, confidence, threshold)
-                frame = cv2.resize(frame,
-                                   (int(capture.get(3)), int(capture.get(4))))
+                output, frame = running_inference(frame, model)
+                frame, frame_cor = draw_keypoints(output, frame, model, confidence, threshold)
 
-                cv2.imwrite(
-                    "results/videoframe_" + os.path.basename(videofile) + '_' +
-                    str(f"{idx:06}.jpg"), frame)
-                outvideo.write(frame)  # output to video file
                 for i, (x, y) in enumerate(frame_cor):
                     csvwriter.writerow([idx, i, x, y])
                     
@@ -378,9 +274,5 @@ def yoloV7_pose_video(videofile, confidence=0.25, threshold=0.65):
     time_per_frame = round(processed_time / (idx - 1), 2)
     print("\nDone in", processed_time, "seconds")
     print("Time per frame =", time_per_frame, "seconds")
-    print("\nSaved video:", outputvideofile)
 
-    capture.release()
-    outvideo.release()
-
-    return outputvideofile
+    return csv_file

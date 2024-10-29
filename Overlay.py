@@ -1,17 +1,32 @@
-import random
+# Module imports
 import cv2
 import numpy as np
+import os
+import urllib.request
+import sys
+import torch
+import time
+import datetime
+import csv
+import random
 import tensorflow as tf
+
+# Function imports
+from Get_Data import read_keypoints_from_csv, yoloV7_pose_video
+from Setup import running_inference
+from Classification import calculate_similarity, minimize_difference
+from torchvision import transforms
+from PIL import Image
+from moviepy.editor import *
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, TimeDistributed
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping
 from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
 from tensorflow.keras.optimizers import Adam
 
-%matplotlib inline
-
 # Defines good and bad videos
+me = [75, 81, 82, 83, 84, 85, 86, 87, 88]
+
 bad = [50, 53, 54, 65, 66, 68, 69, 76, 77, 78, 79, 80, 90, 98, 105, 106, 108, 111, 127]
 for i in range(146, 203):
     bad.append(i)
@@ -19,7 +34,7 @@ for i in range(146, 203):
 good = [i for i in range(10, 134) if i not in bad and i not in me]
 
 
-# Gets the min and max x and y coordinates of a video
+# Gets the min and max x and y coordinates of a video, stored in CSV files
 def get_min_max(csv_file):
     max_x, min_x, max_y, min_y = 0, 0, 0, 0
     with open(csv_file, 'r') as file:
@@ -57,7 +72,7 @@ def draw_model_keypoints(image, model_kp, confidence=0.25, threshold=0.65):
 
     return nimg, cors
 
-# Plots the skeleton keypoints and connects them
+# Adapted from YOLOv7 model, modified to plot the skeleton keypoints and connects them
 def plot_model_skeleton_kpts(im, kpts, steps, orig_shape=None):
     # Plot the skeleton and keypoints for coco dataset
     palette = np.array([[255, 128, 0], [255, 153, 51], [255, 178, 102],
@@ -101,8 +116,8 @@ def plot_model_skeleton_kpts(im, kpts, steps, orig_shape=None):
     
     return xcors, ycors
 
-# Overlays the predicted swing onto the original video
-def overlay_model(overlay_kp, videofile, indexes, confidence=0.25, threshold=0.65):
+# Adapted from YOLOv7 model function yoloV7_pose_video, modified to overlay the predicted swing onto the original video, given a list of coordinates
+def overlay_model(overlay_kp, videofile, indexes, model, confidence=0.25, threshold=0.65):
     start = time.time()
     # Reading video
     video = VideoFileClip(videofile)
@@ -141,7 +156,7 @@ def overlay_model(overlay_kp, videofile, indexes, confidence=0.25, threshold=0.6
                       "| Done:", pctdone, "%")
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            output, frame = running_inference(frame)
+            output, frame = running_inference(frame, model)
             frame, frame_cor = draw_model_keypoints(frame, overlay_kp[int(indexes[idx-1])])
             frame = cv2.resize(frame,
                                (int(capture.get(3)), int(capture.get(4))))
@@ -185,13 +200,13 @@ def video_data(good, bad, offset):
         for j in range(len(frames) - offset - 1):  # For each frame
             keypoints = []
             for kp in range(17):
-                x, y = good_vid_kp[kp+offset][j][0] - bad_vid_kp[kp][j][0], good_vid_kp[kp][j+offset][1] - bad_vid_kp[kp][j][1]
+                x, y = good_vid_kp[kp][j+offset][0] - bad_vid_kp[kp][j][0], good_vid_kp[kp][j+offset][1] - bad_vid_kp[kp][j][1]
                 keypoints.extend([x, y])   
             all_kp.append(keypoints)
     
     return all_kp
 
-# Reads the keypoints from the csv file
+# Reads the keypoints from the csv file, similar to read_keypoints_from_csv function but also takes into account an offset (I used a function to find the optimal frame offset to maximise similarities between the uploaded video and a randomized bad swing that the video will be compared to)
 def get_keypoints_from_csv(csv_file, offset):
     keypoints = [[] for _ in range(17)]  # Assuming 17 keypoints
     frames = []
@@ -220,51 +235,6 @@ def get_keypoints_from_csv(csv_file, offset):
             adjusted_kp.append(i[start:])
 
     return adjusted_kp, frames
-
-# Calculates similarity between the videos
-def calculate_similarity(csv1, csv2, offset):
-    keypoints1, frames1 = read_keypoints_from_csv(csv1)
-    keypoints2, frames2 = read_keypoints_from_csv(csv2)
-
-    if len(frames1) != len(frames2):
-        raise ValueError("The number of frames in the two CSV files must be the same.")
-
-    total_distance = 0
-    num_points = 0
-
-    if offset < 0:
-        offset = abs(offset)
-        for i in range(17):  # For each keypoint
-            for j in range(len(frames1) - offset):  # For each frame
-                x1, y1 = keypoints1[i][j][0], keypoints1[i][j][1]
-                x2, y2 = keypoints2[i][j+offset][0], keypoints2[i][j+offset][1]
-                distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-                total_distance += distance
-                num_points += 1
-    else:
-        for i in range(17):  # For each keypoint
-            for j in range(len(frames1) - offset):  # For each frame
-                x1, y1 = keypoints1[i][j+offset][0], keypoints1[i][j+offset][1]
-                x2, y2 = keypoints2[i][j][0], keypoints2[i][j][1]
-                distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-                total_distance += distance
-                num_points += 1
-
-    average_distance = total_distance / num_points if num_points != 0 else float('inf')
-    similarity_score = 1 / (1 + average_distance)  # A simple way to convert distance to similarity
-
-    return similarity_score
-
-# Minimizes difference between 2 videos
-def minimize_difference(csv1, csv2):
-    similarity = []
-    for i in range(301):
-        similarity.append(calculate_similarity(csv1, csv2, i-150))
-    min_dif = max(similarity)
-    shift = similarity.index(min_dif) - 150
-    print(f'Similarity score: {min_dif}')
-    print(f'Frame shift: {shift}')
-    return shift
 
 # AI model that predicts the output of an "ideal" swing
 def model_good_swing(good_video, bad_video, random_videos, epochs_run):
@@ -311,8 +281,6 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
     # Standardize the data
     scaler1 = StandardScaler()
     scaler2 = StandardScaler()
-    
-    print(X_train.shape)
 
     num_tests, num_features, num_frames, num_videos = X_train.shape
     
@@ -350,13 +318,6 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
     # Train the model with teacher forcing
     history = model.fit(X_train, y_train, epochs=epochs_run, batch_size=1, verbose=1, callbacks=[reduce_lr, early_stopping])
 
-    # Plot the loss
-    plt.plot(history.history['loss'])
-    plt.title('Model Loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-    plt.show()
-
     # Save the model and make predictions
     model_predictions = model.predict(X_test)
     
@@ -376,7 +337,6 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
 
                 keypoint_predictions.append((x, y))
 
-            print(f"Frame {j} predictions: {keypoint_predictions}")
             predictions.append(keypoint_predictions)
             
             
@@ -386,16 +346,15 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
                 x = bad_kp[i][j][0]
                 y = bad_kp[i][j][1]
                 keypoint_predictions.append((x, y))
-            print(f"Frame {j} predictions: {keypoint_predictions}")
             predictions.append(keypoint_predictions)
 
     return predictions
 
 # Function that calls other functions to return output video of the swing
-def predict_swing(videopath):
-    video_number = int(p.split()[2].split('.')[0])
+def predict_swing_path(videopath, pose_model):
+    video_number = int(videopath.split()[2].split('.')[0])
     predictions = model_good_swing(good[int(random.random()*len(good))], video_number, 30, 30)
-    prediction_indexes = np.linspace(0, len(predictions), get_vid_length(videopath))
+    prediction_indexes = np.linspace(0, len(predictions)-1, get_vid_length(videopath))
     max_x, min_x, max_y, min_y = get_min_max(f'keypoints {video_number}.csv')
     expanded_predictions = []
 
@@ -407,4 +366,4 @@ def predict_swing(videopath):
             frame_kp.append((x, y))
         expanded_predictions.append(frame_kp)
 
-    return overlay_model(expanded_predictions, videopath, prediction_indexes)
+    return overlay_model(expanded_predictions, videopath, prediction_indexes, pose_model)
