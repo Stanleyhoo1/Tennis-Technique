@@ -13,6 +13,9 @@ This project aims to empower tennis players to improve their technique independe
 Users only need to provide the path to their video file, with all other parameters set to default. The video input should meet the following requirements:
 - **Angle**: Side view
 - **Content**: Single stroke per video (e.g., one forehand swing)
+
+This is an example of a good video file:
+
   
 Currently, this model supports only **right-handed forehand swings**. I plan to expand it to other strokes as I gather more data. Please note that this project is still in development, with the swing classification model achieving approximately **80% accuracy**. The overlay model is functional but requires further refinement for optimal accuracy.
 
