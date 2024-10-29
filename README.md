@@ -15,7 +15,7 @@ Users only need to provide the path to their video file, with all other paramete
 - **Content**: Single stroke per video (e.g., one forehand swing)
 
 This is an example of a good video file:
-
+![](https://github.com/Stanleyhoo1/Tennis-Technique/blob/main/Example%20Video.gif)
   
 Currently, this model supports only **right-handed forehand swings**. I plan to expand it to other strokes as I gather more data. Please note that this project is still in development, with the swing classification model achieving approximately **80% accuracy**. The overlay model is functional but requires further refinement for optimal accuracy.
 
