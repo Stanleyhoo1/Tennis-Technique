@@ -38,12 +38,23 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 4. **Setup**:
    - Open a program where you can run Python code like Jupyter Notebook in this folder
    - Run the following commands in this exact order:
-     - `from Setup import *`
-     - `model = get_model()`
-   - You should now be in the yolov7 folder, you can check to make sure by running `print(os.getcwd())`
+     - ```python
+       from Setup import
+       ```
+     - ```python
+       model = get_model()
+       ```
+   - You should now be in the yolov7 folder, you can check to make sure by running
+   ```python
+   print(os.getcwd())
+   ```
    - Run the following commands:
-     - `from Classification import classify_swing`
-     - `from Overlay import overlay_swing_path`
+     - ```python
+       from Classification import classify_swing
+       ```
+     - ```python
+       from Overlay import overlay_swing_path
+       ```
 3. **Run the Models**:
    Follow the instructions below for using both models.
 
