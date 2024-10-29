@@ -46,8 +46,6 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
      - This will load the YOLOv7 model we will be using to extract data from the videos
        ```python
        from Setup import
-       ```
-     - ```python
        model = get_model()
        ```
    - You should now be in the yolov7 folder, you can check to make sure by running
