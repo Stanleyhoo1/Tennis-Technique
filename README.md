@@ -19,6 +19,8 @@ This is an example of a good video file:
   
 Currently, this model supports only **right-handed forehand swings**. I plan to expand it to other strokes as I gather more data. Please note that this project is still in development, with the swing classification model achieving approximately **80% accuracy**. The overlay model is functional but requires further refinement for optimal accuracy.
 
+**Note**: These models take quite a while to run depending on video length so please be patient if you don't see any output. If all instructions are followed correctly, these models should work.
+
 ## Getting Started
 
 1. **Clone the Repository**:
