@@ -144,9 +144,9 @@ def get_training(model_videos, good, bad):
             all_similarity = []
             for vid in model_videos:
                 similarity = []
-                shift = minimize_difference(f'..Data/keypoints {vid}.csv', f'..Data/keypoints {i}.csv')
+                shift = minimize_difference(f'../Data/keypoints {vid}.csv', f'../Data/keypoints {i}.csv')
                 for kp in range(17):
-                    similarity.append(calculate_keypoint_similarity(f'..Data/keypoints {vid}.csv', f'..Data/keypoints {i}.csv', shift, kp))
+                    similarity.append(calculate_keypoint_similarity(f'../Data/keypoints {vid}.csv', f'../Data/keypoints {i}.csv', shift, kp))
                 all_similarity.append(similarity)
             
             for kp in range(17):
@@ -287,14 +287,14 @@ def classify_swing(videos, pose_model):
     
     # Process good videos
     for i in good:
-        csv_file = f'..Data/keypoints {i}.csv'
+        csv_file = f'../Data/keypoints {i}.csv'
         keypoints, frames = read_keypoints_from_csv(csv_file)
         keypoints = np.array(keypoints).reshape(17, -1)  # Shape: (17, num_frames*2)
         keypoints_data.append(keypoints.flatten())
         labels.append(1)
         
     for i in extra_good:
-        csv_file = f'..Data/Test - {i}.csv'
+        csv_file = f'../Data/Test - {i}.csv'
         keypoints, frames = read_keypoints_from_csv(csv_file)
         keypoints = np.array(keypoints).reshape(17, -1)
         keypoints_data.append(keypoints.flatten())
@@ -302,14 +302,14 @@ def classify_swing(videos, pose_model):
     
     # Process bad videos
     for i in bad:
-        csv_file = f'..Data/keypoints {i}.csv'
+        csv_file = f'../Data/keypoints {i}.csv'
         keypoints, frames = read_keypoints_from_csv(csv_file)
         keypoints = np.array(keypoints).reshape(17, -1)
         keypoints_data.append(keypoints.flatten())
         labels.append(0)
         
     for i in extra_bad:
-        csv_file = f'..Data/Test - {i}.csv'
+        csv_file = f'../Data/Test - {i}.csv'
         keypoints, frames = read_keypoints_from_csv(csv_file)
         keypoints = np.array(keypoints).reshape(17, -1)
         keypoints_data.append(keypoints.flatten())

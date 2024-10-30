@@ -184,8 +184,8 @@ def overlay_model(overlay_kp, videofile, indexes, model, confidence=0.25, thresh
 
 # Difference between keypoints in the 2 videos
 def video_data(good, bad, offset):
-    good_vid_kp, frames = read_keypoints_from_csv(f'..Data/keypoints {good}.csv')
-    bad_vid_kp, frames = read_keypoints_from_csv(f'..Data/keypoints {bad}.csv')
+    good_vid_kp, frames = read_keypoints_from_csv(f'../Data/keypoints {good}.csv')
+    bad_vid_kp, frames = read_keypoints_from_csv(f'../Data/keypoints {bad}.csv')
     all_kp = []
     if offset < 0:
         offset = abs(offset)
@@ -240,7 +240,7 @@ def get_keypoints_from_csv(csv_file, offset):
 def model_good_swing(good_video, bad_video, random_videos, epochs_run):
     # - ==> 2nd vid ahead
     # + ==> 1st vid ahead
-    offset = minimize_difference(f'..Data/keypoints {good_video}.csv', f'..Data/keypoints {bad_video}.csv')
+    offset = minimize_difference(f'../Data/keypoints {good_video}.csv', f'../Data/keypoints {bad_video}.csv')
     
     random_good_videos = []
     random_bad_videos = []
@@ -255,15 +255,15 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
     random_bad = []
     
     for i in random_good_videos:
-        kp, frames = get_keypoints_from_csv(f'..Data/keypoints {i}.csv', offset)
+        kp, frames = get_keypoints_from_csv(f'../Data/keypoints {i}.csv', offset)
         random_good.append(kp)
         
     for i in random_bad_videos:
-        kp, frames = get_keypoints_from_csv(f'..Data/keypoints {i}.csv', offset)
+        kp, frames = get_keypoints_from_csv(f'../Data/keypoints {i}.csv', offset)
         random_bad.append(kp)
         
-    good_test, frames = get_keypoints_from_csv(f'..Data/keypoints {good_video}.csv', offset)
-    bad_test, frames = get_keypoints_from_csv(f'..Data/keypoints {bad_video}.csv', offset)
+    good_test, frames = get_keypoints_from_csv(f'../Data/keypoints {good_video}.csv', offset)
+    bad_test, frames = get_keypoints_from_csv(f'../Data/keypoints {bad_video}.csv', offset)
         
     random_differences = []
 
@@ -341,7 +341,7 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
             
             
         else:
-            bad_kp, frames = read_keypoints_from_csv(f'..Data/keypoints {bad_video}.csv')
+            bad_kp, frames = read_keypoints_from_csv(f'../Data/keypoints {bad_video}.csv')
             for i in range(17):
                 x = bad_kp[i][j][0]
                 y = bad_kp[i][j][1]
@@ -351,11 +351,11 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
     return predictions
 
 # Function that calls other functions to return output video of the swing
-def predict_swing_path(videopath, pose_model):
+def overlay_swing_path(videopath, pose_model):
     video_number = int(videopath.split()[2].split('.')[0])
     predictions = model_good_swing(good[int(random.random()*len(good))], video_number, 30, 30)
     prediction_indexes = np.linspace(0, len(predictions)-1, get_vid_length(videopath))
-    max_x, min_x, max_y, min_y = get_min_max(f'..Data/keypoints {video_number}.csv')
+    max_x, min_x, max_y, min_y = get_min_max(f'../Data/keypoints {video_number}.csv')
     expanded_predictions = []
 
     for i in predictions:

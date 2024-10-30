@@ -234,7 +234,7 @@ def yoloV7_pose_video(videofile, model, confidence=0.25, threshold=0.65):
     
     videoname = videofile.split('/')[-1].split('.')[0]
 
-    csv_file = f'..Tests/{videoname}.csv'
+    csv_file = f'../Tests/{videoname}.csv'
     
     if os.path.exists(csv_file):
         return csv_file
