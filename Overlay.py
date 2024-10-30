@@ -137,7 +137,7 @@ def overlay_model(overlay_kp, videofile, indexes, model, confidence=0.25, thresh
     capture = cv2.VideoCapture(videofile)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_name = videofile.split('/')[-1].split('.')[0]
-    outputvideofile = f"../results/{video_number}_predicted_swing.mp4"
+    outputvideofile = f"../results/{video_name}_predicted_swing.mp4"
     outvideo = cv2.VideoWriter(outputvideofile, fourcc, 30.0,
                                (int(capture.get(3)), int(capture.get(4))))
     idx = 1
