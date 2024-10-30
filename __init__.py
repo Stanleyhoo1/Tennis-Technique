@@ -1,7 +1,12 @@
 import sys
 from pathlib import Path
 
+print(os.getcwd())
+
 from setup import *
+
+print(os.getcwd())
+
 model = get_model()
 
 print(os.getcwd())
