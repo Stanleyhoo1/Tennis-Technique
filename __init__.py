@@ -1,16 +1,16 @@
 import sys
 from pathlib import Path
 
-from Setup import *
+from setup import *
 model = get_model()
 
 print(os.getcwd())
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from Classification import classify_swing
+from classification import classify_swing
 
-from Overlay import overlay_swing_path
+from overlay import overlay_swing_path
 
 sys.path.pop(0)
 
