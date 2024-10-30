@@ -30,7 +30,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
    ```
 
 2. **Download the YOLOv7 Model**:
-   - Download the YOLOv7 model weights and place them in the Tennis-Technique folder. Follow the instructions from the YOLOv7 [GitHub repository](https://github.com/WongKinYiu/yolov7/tree/main) to download the model (or you can just clone the YOLOv7 repository in the Tennis-Technique folder).
+   - Download the YOLOv7 model and place that folder in the Tennis-Technique folder. Follow the instructions from the YOLOv7 [GitHub repository](https://github.com/WongKinYiu/yolov7/tree/main) to download the model (or you can just clone the YOLOv7 repository in the Tennis-Technique folder).
   
   
 3. **Setup**:
