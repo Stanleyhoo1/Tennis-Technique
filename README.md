@@ -31,12 +31,9 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 
 2. **Download the YOLOv7 Model**:
    - Download the YOLOv7 model weights and place them in the Tennis-Technique folder. Follow the instructions from the YOLOv7 [GitHub repository](https://github.com/WongKinYiu/yolov7/tree/main) to download the model (or you can just clone the YOLOv7 repository in the Tennis-Technique folder).
-
-3. **Create Folder to Store Data**:
-   - Create an empty folder called Tests in the Tennis-Technique folder
-   - Create an empty folder called results in the Tennis-Technique folder (this is where the outputs for the overlay model will go)
   
-4. **Setup**:
+  
+3. **Setup**:
    - Open Command Prompt or Terminal
    - Navigate to this folder (`cd path/to/Tennis-Technique`)
    - Run the following commands in this exact order:
@@ -49,7 +46,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
        ```python
        python -i __init__.py
        ```
-5. **Run the Models**:
+4. **Run the Models**:
    Follow the instructions below for using both models.
 
 ---
