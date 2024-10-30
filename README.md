@@ -17,7 +17,7 @@ Users only need to provide the path to their video file, with all other paramete
 This is an example of a good video file:
 ![](https://github.com/Stanleyhoo1/Tennis-Technique/blob/main/Example%20Video.gif)
   
-Currently, this model supports only **right-handed forehand swings**. I plan to expand it to other strokes as I gather more data. Please note that this project is still in development, with the swing classification model achieving approximately **80% accuracy**. The overlay model is functional but requires further refinement for optimal accuracy.
+Currently, this model supports only **right-handed forehand swings**. I plan to expand it to other strokes as I gather more data. Please note that this project is still in development, with the swing classification model achieving approximately **80% accuracy**. The overlay model is functional but requires further refinement for optimal accuracy. A demo of both models being used in Jupyter Notebook can be viewed in the Final_Test notebook. The other notebooks were used for testing and graphing data, you can view my process of designing the model through those.
 
 **Note**: These models take quite a while to run depending on video length so please be patient if you don't see any output immediately. If all instructions are followed correctly, these models should work.
 
@@ -90,3 +90,14 @@ I am working to improve both models by gathering more data and fine-tuning model
 ---
 
 This project is intended for players looking to refine their technique with minimal input from external coaches. **Note**: While the models provide guidance, they are not a substitute for professional coaching and should be used as supplementary tools for improvement.
+
+---
+
+## Appendix: Neural Network Model Development
+I built two main models for this project: a classification model and a swing overlay model.
+
+**Classification Model**: This model classifies each swing as "good" or "bad" based on key technique markers. I used YOLOv7 to pull keypoints from each video frame, then normalized and interpolated these points to make sure everything lined up across different videos. This way, the model could pick out patterns regardless of video length or player position. It uses a seqeuntial binary classification model to predict these classifications, and currently has about an 80% accuracy rate.
+
+**Swing Overlay Model**: This model’s goal is to predict an ideal swing path and overlay it on the video. It’s a time-series regression model using LSTM layers, which looks at differences between "good" and "bad" swings and calculates small adjustments needed to improve each frame. In the final output, you’ll see a skeleton overlay that shows the optimal swing path right alongside the player’s actual swing, so they can see where to make changes.
+
+Both models took a lot of trial and error with normalization, dataset tweaks, and model tuning to get results I was happy with.
