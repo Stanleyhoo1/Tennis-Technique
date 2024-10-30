@@ -12,7 +12,7 @@ import csv
 import random
 import tensorflow as tf
 
-# Function imports
+# Module imports
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint
 from torchvision import transforms
 from PIL import Image
@@ -21,7 +21,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from Get_Data import read_keypoints_from_csv, yoloV7_pose_video
+from get_data import read_keypoints_from_csv, yoloV7_pose_video
 
 # Defines the videos (while gathering data, it was done a little out of order)
 model_videos = [19, 38, 48, 72, 73]

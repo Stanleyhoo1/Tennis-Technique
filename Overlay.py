@@ -12,9 +12,9 @@ import random
 import tensorflow as tf
 
 # Function imports
-from Get_Data import read_keypoints_from_csv, yoloV7_pose_video
-from Setup import running_inference
-from Classification import calculate_similarity, minimize_difference
+from get_data import read_keypoints_from_csv, yoloV7_pose_video
+from setup import running_inference
+from classification import calculate_similarity, minimize_difference
 from torchvision import transforms
 from PIL import Image
 from moviepy.editor import *

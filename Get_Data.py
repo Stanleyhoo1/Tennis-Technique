@@ -11,7 +11,7 @@ import csv
 from torchvision import transforms
 from PIL import Image
 from moviepy.editor import *
-from Setup import running_inference
+from setup import running_inference
 from utils.datasets import letterbox
 from utils.general import non_max_suppression_kpt
 from utils.plots import output_to_keypoint, plot_skeleton_kpts
