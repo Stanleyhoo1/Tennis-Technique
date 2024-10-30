@@ -90,9 +90,9 @@ def get_model():
     if current_folder != YOLO_DIR:
         os.chdir(YOLO_DIR)
     
-    from yolov7.utils.datasets import letterbox
-    from yolov7.utils.general import non_max_suppression_kpt
-    from yolov7.utils.plots import output_to_keypoint, plot_skeleton_kpts
+    from utils.datasets import letterbox
+    from utils.general import non_max_suppression_kpt
+    from utils.plots import output_to_keypoint, plot_skeleton_kpts
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
