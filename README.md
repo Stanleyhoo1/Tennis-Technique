@@ -63,6 +63,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 
 2. **Output**:
    - The model will output whether the swing is classified as "good" or "bad" with an 80% accuracy level.
+   - You can test this model on the example video in this repository, you should get a "good" swing
 
 ## AI Swing Overlay Model
 
@@ -76,6 +77,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
 
 2. **Output**:
    - The model will return the path of the output video file, which is the original video with the predicted swing path overlayed on the player, showing the suggested optimal swing. The output video file will be in the results folder that you created in the Tennis-Technique folder
+   - You can see an example output video file in the results folder
 
 ---
 
