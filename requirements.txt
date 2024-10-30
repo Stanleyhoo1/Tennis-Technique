@@ -9,8 +9,8 @@ Pillow>=7.1.2
 PyYAML>=5.3.1
 requests>=2.23.0
 scipy>=1.4.1
-torch>=1.7.0,!=1.12.0
-torchvision>=0.8.1,!=0.13.0
+torch==2.5.1
+torchvision==0.20.1
 tqdm>=4.41.0
 
 # Logging -------------------------------------
@@ -90,7 +90,7 @@ setuptools==70.3.0
 six==1.16.0
 soupsieve==2.6
 sqlparse==0.5.0
-sympy==1.12.1
+sympy==1.13.1
 tbb==2021.12.0
 tensorboard==2.17.0
 tensorboard-data-server==0.7.2
@@ -98,7 +98,6 @@ tensorflow==2.17.0
 tensorflow-intel==2.17.0
 termcolor==2.4.0
 threadpoolctl==3.4.0
-torch==2.3.0
 tqdm==4.66.4
 typing_extensions==4.12.1
 tzdata==2024.1
