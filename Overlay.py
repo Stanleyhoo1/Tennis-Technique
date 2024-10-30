@@ -352,7 +352,7 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
 
 # Function that calls other functions to return output video of the swing
 def overlay_swing_path(videopath, pose_model):
-    video_csv = YOLOv7_pose_video(videopath, pose_model)
+    video_csv = yoloV7_pose_video(videopath, pose_model)
     predictions = model_good_swing(good[int(random.random()*len(good))], video_csv, 30, 30)
     prediction_indexes = np.linspace(0, len(predictions)-1, get_vid_length(videopath))
     max_x, min_x, max_y, min_y = get_min_max(f'../Tests/{video_csv}')
