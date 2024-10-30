@@ -38,7 +38,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
   
 4. **Setup**:
    - Open Command Prompt or Terminal
-   - Navigate to this folder (cd path/to/Tennis-Technique)
+   - Navigate to this folder (`cd path/to/Tennis-Technique`)
    - Run the following commands in this exact order:
      - This will install the neccesary packages
 
