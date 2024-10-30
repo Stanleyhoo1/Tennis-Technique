@@ -185,7 +185,7 @@ def overlay_model(overlay_kp, videofile, indexes, model, confidence=0.25, thresh
 # Difference between keypoints in the 2 videos
 def video_data(good, bad, offset):
     good_vid_kp, frames = read_keypoints_from_csv(f'../Data/keypoints {good}.csv')
-    bad_vid_kp, frames = read_keypoints_from_csv(f'../Data/{bad}')
+    bad_vid_kp, frames = read_keypoints_from_csv(bad)
     all_kp = []
     if offset < 0:
         offset = abs(offset)
@@ -263,14 +263,14 @@ def model_good_swing(good_video, bad_video, random_videos, epochs_run):
         random_bad.append(kp)
         
     good_test, frames = get_keypoints_from_csv(f'../Data/keypoints {good_video}.csv', offset)
-    bad_test, frames = get_keypoints_from_csv(f'../Data/{bad_video}', offset)
+    bad_test, frames = get_keypoints_from_csv(bad_video, offset)
         
     random_differences = []
 
     test_differences = video_data(good_video, bad_video, offset)
     
     for i in range(random_videos):
-        random_differences.append(video_data(random_good_videos[i], random_bad_videos[i], offset))
+        random_differences.append(video_data(random_good_videos[i], f'../Data/keypoints {random_bad_videos[i]}.csv', offset))
 
     # Convert to numpy arrays
     X_train = np.array([random_bad][0])
