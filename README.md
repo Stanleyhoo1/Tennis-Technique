@@ -30,36 +30,26 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
    ```
 
 2. **Download the YOLOv7 Model**:
-   - Download the YOLOv7 model weights and place them in the project directory. Follow the instructions from the YOLOv7 [GitHub repository](https://github.com/WongKinYiu/yolov7/tree/main) to download the model.
+   - Download the YOLOv7 model weights and place them in the Tennis-Technique folder. Follow the instructions from the YOLOv7 [GitHub repository](https://github.com/WongKinYiu/yolov7/tree/main) to download the model (or you can just clone the YOLOv7 repository in the Tennis-Technique folder).
 
 3. **Create Folder to Store Data**:
-   - Create an empty folder called Tests in the folder you cloned this repo to
+   - Create an empty folder called Tests in the Tennis-Technique folder
+   - Create an empty folder called results in the Tennis-Technique folder (this is where the outputs for the overlay model will go)
   
 4. **Setup**:
-   - Open a program where you can run Python code like Jupyter Notebook in this folder
+   - Open Command Prompt or Terminal
+   - Navigate to this folder (`cd path/to/Tennis-Technique`)
    - Run the following commands in this exact order:
      - This will install the neccesary packages
 
        ```python
        pip install -r requirements.txt
        ```
-     - This will load the YOLOv7 model we will be using to extract data from the videos
+     - This will load the YOLOv7 model we will be using to extract data from the videos and import the modules we will be using
        ```python
-       from Setup import *
-       model = get_model()
+       python -i __init__.py
        ```
-   - You should now be in the yolov7 folder, you can check to make sure by running
-   ```python
-   print(os.getcwd())
-   ```
-   - Run the following commands:
-     - ```python
-       from Classification import classify_swing
-       ```
-     - ```python
-       from Overlay import overlay_swing_path
-       ```
-3. **Run the Models**:
+5. **Run the Models**:
    Follow the instructions below for using both models.
 
 ---
@@ -88,7 +78,7 @@ Currently, this model supports only **right-handed forehand swings**. I plan to 
      ```
 
 2. **Output**:
-   - The model will return the path of the output video file, which is the original video with the predicted swing path overlayed on the player, showing the suggested optimal swing.
+   - The model will return the path of the output video file, which is the original video with the predicted swing path overlayed on the player, showing the suggested optimal swing. The output video file will be in the results folder that you created in the Tennis-Technique folder
 
 ---
 
