@@ -3,8 +3,3 @@
 
 # Ignore Jupyter notebook checkpoints
 .ipynb_checkpoints/
-
-# Ignore any temporary files or backup notebooks
-*~ 
-
-results/
